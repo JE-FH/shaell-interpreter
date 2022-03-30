@@ -56,7 +56,7 @@ $obj = $CreateTable()
 $obj:thing = 1
 
 $print("haha ", $obj:thing + 2, " benis")
-
+"skokd":length()
 
 $print("haha benis")
 
@@ -67,5 +67,28 @@ end
 if false then
     $print("nej ikke benis")
 end
+
+$thing = $CreateTable()
+$thing[0] = 0
+$thing[1] = 1
+$thing[6] = 6
+
+$thing[3] = 3
+$thing[2] = 2
+
+$thing[19] = 19
+
+$thing:insert("4 som streng")
+$thing:insert(5, 7)
+
+$i = 0
+while $i < $thing:length() do
+    $print($thing[$i])
+    $i = $i + 1
+end
+
+$print("------------------")
+
+$print($thing:length())
 
 
