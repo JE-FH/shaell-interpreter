@@ -13,7 +13,7 @@ fn $callbackfn($n)
     fn $funktionDerPrintern($n)
         $print($n)
     end
-    return $funktionDerPrintern;
+    return $funktionDerPrintern
 end
 
 fn $medCallback($callback)
@@ -22,11 +22,11 @@ end
 
 $medCallback($callbackfn(5))
 
-$print("Hello from shæll!")
+$print("Hællo from shæll!")
 
 $str = "abcdefg"
 
-$i = 0;
+$i = 0
 while $i < $str:length() do
     $print($str[$i])
     $i = $i + 1

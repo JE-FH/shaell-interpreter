@@ -52,13 +52,13 @@ public class BString : BaseValue, ITable
     }
 
     public BString(string val) : this(Encoding.Default.GetBytes(val)) { }
-    public bool ToBool() => true;
+    public override bool ToBool() => true;
 
-    public Number ToNumber() => new(int.Parse(_val));
+    public override Number ToNumber() => new(int.Parse(_val));
 
-    public SString ToSString() => new(_val);
+    public override SString ToSString() => new(_val);
 
-    public ITable ToTable() => this;
+    public override ITable ToTable() => this;
     public override bool IsEqual(IValue other)
     {
         if (other is BString unpackedBString)

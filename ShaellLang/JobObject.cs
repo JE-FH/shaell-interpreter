@@ -67,27 +67,27 @@ public class JobObject : BaseValue, IValue
         }
     }
 
-    public bool ToBool()
+    public override bool ToBool()
     {
         return Value.ToBool();
     }
 
-    public Number ToNumber()
+    public override Number ToNumber()
     {
         return Value.ToNumber();
     }
 
-    public IFunction ToFunction()
+    public override IFunction ToFunction()
     {
         return Value.ToFunction();
     }
 
-    public SString ToSString()
+    public override SString ToSString()
     {
         return Value.ToSString();
     }
 
-    public ITable ToTable()
+    public override ITable ToTable()
     {
         return _nativeTable;
     }

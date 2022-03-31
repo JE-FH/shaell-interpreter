@@ -24,7 +24,7 @@ public class UserFunc : BaseValue, IFunction
         _globalScope = new ScopeContext();
     }
 
-    public bool ToBool() => true;
+    public override bool ToBool() => true;
 
     public IValue Call(IEnumerable<IValue> args)
     {
