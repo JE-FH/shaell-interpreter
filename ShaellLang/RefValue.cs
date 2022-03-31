@@ -1,10 +1,11 @@
 ﻿namespace ShaellLang;
 
-public class RefValue : IValue
+public class RefValue : BaseValue
 {
     private IValue _realValue;
 
     public RefValue(IValue val)
+        : base("refvalue")
     {
         _realValue = val;
     }
@@ -16,10 +17,8 @@ public class RefValue : IValue
 
     public IValue Get()
     {
-        if (_realValue is RefValue)
-        {
-            return _realValue;
-        }
+        return _realValue;
+        
     }
 
     public IValue Unpack()
@@ -34,28 +33,18 @@ public class RefValue : IValue
         }
     }
 
-    public bool ToBool()
-    {
-        return _realValue.ToBool();
-    }
+    public override bool ToBool() => _realValue.ToBool();
 
-    public Number ToNumber()
-    {
-        return _realValue.ToNumber();
-    }
+    public override Number ToNumber() => _realValue.ToNumber();
 
-    public IFunction ToFunction()
-    {
-        return _realValue.ToFunction();
-    }
+    public override IFunction ToFunction() => _realValue.ToFunction();
 
-    public SString ToSString()
-    {
-        return _realValue.ToSString();
-    }
+    public override SString ToSString() => _realValue.ToSString();
 
-    public ITable ToTable()
+    public override ITable ToTable() => _realValue.ToTable();
+
+    public override bool IsEqual(IValue other)
     {
-        return _realValue.ToTable();
+        return _realValue.IsEqual(other);
     }
 }

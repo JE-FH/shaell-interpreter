@@ -6,31 +6,32 @@ using System.Threading.Tasks;
 
 namespace ShaellLang;
 
-public class JobObject : NativeTable, IValue
+public class JobObject : BaseValue, IValue
 {
+    private readonly Process _process;
+    private NativeTable _nativeTable;
+    public JobObject(IValue value) : this()
+    {
+        _nativeTable = new NativeTable();
+        _nativeTable.SetValue("value", value);
+    }
+    
     private IValue Value
     {
-        get => GetValue(new SString("value"));
-        set => SetValue("value", value);
+        get => _nativeTable.GetValue(new SString("value"));
+        set => _nativeTable.SetValue("value", value);
     }
 
     private IValue Out
     {
-        get => GetValue(new SString("out"));
-        set => SetValue("out", value);
+        get => _nativeTable.GetValue(new SString("out"));
+        set => _nativeTable.SetValue("out", value);
     }
     
     private IValue Err
     {
-        get => GetValue(new SString("err"));
-        set => SetValue("err", value);
-    }
-
-    private readonly Process _process;
-
-    public JobObject(IValue value) : this()
-    {
-        SetValue("value", value);
+        get => _nativeTable.GetValue(new SString("err"));
+        set => _nativeTable.SetValue("err", value);
     }
 
     private JobObject(Process process) : this()
@@ -38,11 +39,12 @@ public class JobObject : NativeTable, IValue
         _process = process;
     }
 
-    private JobObject()
+    private JobObject() : base("jobobject")
     {
-        SetValue("out", new SNull());
-        SetValue("value", new SNull());
-        SetValue("err", new SNull());
+        _nativeTable = new NativeTable();
+        _nativeTable.SetValue("out", new SNull());
+        _nativeTable.SetValue("value", new SNull());
+        _nativeTable.SetValue("err", new SNull());
     }
 
     public static class Factory
@@ -87,6 +89,11 @@ public class JobObject : NativeTable, IValue
 
     public ITable ToTable()
     {
-        return this;
+        return _nativeTable;
+    }
+
+    public override bool IsEqual(IValue other)
+    {
+        return this == other;
     }
 }

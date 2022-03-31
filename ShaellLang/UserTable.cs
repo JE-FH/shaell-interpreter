@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ShaellLang
 {
-	public class UserTable : NativeTable, IValue
+	public class UserTable : BaseValue, ITable
 	{
 		private Dictionary<string, RefValue> values;
 		//Store the array values in order
@@ -13,17 +14,17 @@ namespace ShaellLang
 		private List<RefValue> _consecutiveValues;
 		
 		private string KeyValue(IKeyable key) => key.UniquePrefix + key.KeyValue;
-		public UserTable()
+		public UserTable() 
+			: base("usertable")
 		{
 			values = new Dictionary<string, RefValue>();
 			_consecutiveValues = new List<RefValue>();
 			_sortedValues = new SortedDictionary<int, RefValue>();
-			
-			SetValue("length", new NativeFunc(LengthFunc, 0));
-			SetValue("insert", new NativeFunc(InsertFunc, 1));
+			SetValue(new SString("length"), new NativeFunc(LengthFunc, 0));
+			SetValue(new SString("insert"), new NativeFunc(InsertFunc, 1));
 		}
 
-		public IValue InsertFunc(ICollection<IValue> args)
+		public IValue InsertFunc(IEnumerable<IValue> args)
 		{
 			foreach (var arg in args)
 			{
@@ -34,7 +35,7 @@ namespace ShaellLang
 			return new SNull();
 		}
 
-		public IValue LengthFunc(ICollection<IValue> args)
+		public IValue LengthFunc(IEnumerable<IValue> args)
 		{
 			return new Number(_consecutiveValues.Count);
 		}
@@ -68,7 +69,7 @@ namespace ShaellLang
 			}
 		}
 		
-		public override RefValue GetValue(IKeyable key)
+		public RefValue GetValue(IKeyable key)
 		{
 			if (key is Number {IsInteger: true} numberKey)
 			{
@@ -90,7 +91,7 @@ namespace ShaellLang
 					if (number <= int.MaxValue)
 					{
 						var newVal = new RefValue(new SNull());
-						_sortedValues.Add((int) number, newVal);
+						_sortedValues[(int) number] = newVal;
 						return newVal;
 					}
 				} 
@@ -102,45 +103,29 @@ namespace ShaellLang
 			{
 				return value;
 			}
-
-			var val = base.GetValue(key);
-
-			if (val != null)
-			{
-				return val;
-			}
+			
 			//Since keys should be implicitly defined we just add the key and return it
 			return SetValue(key, new SNull());
 		}
 
-		public override void RemoveValue(IKeyable key)
+		public void RemoveValue(IKeyable key)
 		{
 			values.Remove(KeyValue(key));
 		}
 
-		public bool ToBool()
+		public override bool ToBool()
 		{
 			return true;
 		}
-
-		public Number ToNumber()
-		{
-			throw new Exception("Type error: cannot convert table to number");
-		}
-
-		public IFunction ToFunction()
-		{
-			throw new Exception("Type error: cannot convert table to function");
-		}
-
-		public SString ToSString()
-		{
-			throw new Exception("Type error: cannot convert table to string");
-		}
-
-		public ITable ToTable()
+		
+		public override ITable ToTable()
 		{
 			return this;
+		}
+
+		public override bool IsEqual(IValue other)
+		{
+			return other == this;
 		}
 	}
 }

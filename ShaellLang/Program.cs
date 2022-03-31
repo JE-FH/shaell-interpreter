@@ -29,7 +29,7 @@ namespace ShaellLang
             
             ShaellParser.ProgContext progContext = shaellParser.prog();
             var executer = new ExecutionVisitor();
-            executer.SetGlobal("$print", new NativeFunc(delegate(ICollection<IValue> args)
+            executer.SetGlobal("$print", new NativeFunc(delegate(IEnumerable<IValue> args)
             {
                 foreach (var value in args)
                 {
@@ -39,6 +39,15 @@ namespace ShaellLang
 
                 return new SNull();
             }, 0));
+            
+            executer.SetGlobal("$T", TableLib.CreateLib());
+            
+            executer.SetGlobal("$debug_break", new NativeFunc(delegate(IEnumerable<IValue> args)
+            {
+                Console.WriteLine("Debug break");
+                return new SNull();
+            }, 0));
+            
             
             executer.Visit(progContext);
             

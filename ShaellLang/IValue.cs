@@ -16,5 +16,7 @@ namespace ShaellLang
 		ITable ToTable();
 
 		bool IsEqual(IValue other);
+
+		string GetTypeName();
 	}
 }
