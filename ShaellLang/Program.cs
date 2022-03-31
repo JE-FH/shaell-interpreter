@@ -40,11 +40,6 @@ namespace ShaellLang
                 return new SNull();
             }, 0));
             
-            executer.SetGlobal("$CreateTable", new NativeFunc(delegate(ICollection<IValue> values)
-            {
-                return new UserTable();
-            }, 1));
-            
             executer.Visit(progContext);
             
         }

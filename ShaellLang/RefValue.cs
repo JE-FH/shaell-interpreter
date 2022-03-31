@@ -16,7 +16,22 @@ public class RefValue : IValue
 
     public IValue Get()
     {
-        return _realValue;
+        if (_realValue is RefValue)
+        {
+            return _realValue;
+        }
+    }
+
+    public IValue Unpack()
+    {
+        if (_realValue is RefValue realRefValue)
+        {
+            return realRefValue.Unpack();
+        }
+        else
+        {
+            return _realValue;
+        }
     }
 
     public bool ToBool()

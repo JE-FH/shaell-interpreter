@@ -51,7 +51,16 @@ public class BString : NativeTable, IValue
     public SString ToSString() => new(_val);
 
     public ITable ToTable() => this;
-    
+    public bool IsEqual(IValue other)
+    {
+        if (other is BString unpackedBString)
+        {
+            return unpackedBString._buffer.SequenceEqual(_buffer);
+        }
+
+        return false;
+    }
+
     public override RefValue GetValue(IKeyable key)
     {
         if (key is Number numberKey)

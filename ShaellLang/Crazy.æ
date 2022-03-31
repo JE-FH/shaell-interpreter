@@ -51,9 +51,7 @@ $print(
     "!"
 )
 
-$obj = $CreateTable()
-
-$obj:thing = 1
+$obj = {thing = 1}
 
 $print("haha ", $obj:thing + 2, " benis")
 "skokd":length()
@@ -68,15 +66,7 @@ if false then
     $print("nej ikke benis")
 end
 
-$thing = $CreateTable()
-$thing[0] = 0
-$thing[1] = 1
-$thing[6] = 6
-
-$thing[3] = 3
-$thing[2] = 2
-
-$thing[19] = 19
+$thing = {[0] = 1, [1] = 2, [6] = 6, [3] = 3, [2] = 2, [19] = 19}
 
 $thing:insert("4 som streng")
 $thing:insert(5, 7)
@@ -91,4 +81,14 @@ $print("------------------")
 
 $print($thing:length())
 
+$t = {[0] = 0, [1] = 1}
+
+fn $fib($n)
+    if $t[$n] == null then
+        t[$n] = $fib($n - 1) + $fib($n - 2)
+    end
+    return $t[$n]
+end
+
+$print($fib(10))
 

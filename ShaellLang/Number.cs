@@ -112,5 +112,15 @@ namespace ShaellLang
             return a.ToInteger() > b.ToInteger();
         }
         
+        public bool IsEqual(IValue other)
+        {
+            if (other is Number number)
+            {
+                return number == other;
+            }
+
+            return false;
+        }
+        
     }
 }

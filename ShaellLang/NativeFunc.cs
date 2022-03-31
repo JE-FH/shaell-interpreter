@@ -39,5 +39,10 @@ namespace ShaellLang
 		{
 			throw new Exception("Type error, function cannot be converted to table");
 		}
+
+		public bool IsEqual(IValue other)
+		{
+			return other == this;
+		}
 	}
 }
