@@ -24,4 +24,8 @@
     <Content Include="Shaell.g4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProcessLib\ProcessLib.csproj" />
+  </ItemGroup>
+
 </Project>

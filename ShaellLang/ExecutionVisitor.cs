@@ -436,4 +436,12 @@ public class ExecutionVisitor : ShaellBaseVisitor<IValue>
     
     public override IValue VisitBnotExpr(ShaellParser.BnotExprContext context) => 
         throw new NotImplementedException();
+
+    public override IValue VisitPIPEExpr(ShaellParser.PIPEExprContext context)
+    {
+        var lhs = Visit(context.expr(0));
+        var rhs = Visit(context.expr(1));
+        
+        lhs.ToSReadStream().ReadStream.Pipe(rhs.ToSWriteStream().WriteStream);
+    }
 }

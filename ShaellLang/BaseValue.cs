@@ -11,14 +11,12 @@ public abstract class BaseValue : IValue
         _typeName = typeName;
     }
     public virtual bool ToBool() => throw new Exception($"Cannot convert {_typeName} to bool");
-
     public virtual Number ToNumber() => throw new Exception($"Cannot convert {_typeName} to number");
     public virtual IFunction ToFunction() => throw new Exception($"Cannot convert {_typeName} to function");
-
     public virtual SString ToSString() => throw new Exception($"Cannot convert {_typeName} to string");
-
     public virtual ITable ToTable() => throw new Exception($"Cannot convert {_typeName} to table");
-
+    public virtual SReadStream ToSReadStream() => throw new Exception($"Cannot convert {_typeName} to read stream");
+    public virtual SWriteStream ToSWriteStream() => throw new Exception($"Cannot convert {_typeName} to write stream");
     public abstract bool IsEqual(IValue other);
     
     public string GetTypeName() => _typeName;

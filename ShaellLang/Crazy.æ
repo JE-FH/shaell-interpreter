@@ -116,3 +116,5 @@ $print("rrgr" + "ksfogk")
 $print("skok" + 492)
 $print(942 + "bob")
 
+$split = (echo((echo("ksogk") -> xargs()):out) -> grep("test")):out
+

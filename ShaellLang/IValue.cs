@@ -14,6 +14,10 @@ namespace ShaellLang
 		SString ToSString();
 
 		ITable ToTable();
+		
+		SReadStream ToSReadStream();
+		
+		SWriteStream ToSWriteStream();
 
 		bool IsEqual(IValue other);
 
