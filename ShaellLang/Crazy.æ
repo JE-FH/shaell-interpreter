@@ -118,3 +118,12 @@ $print(942 + "bob")
 
 $split = (echo((echo("ksogk") -> xargs()):out) -> grep("test")):out
 
+$testvalue = 3
+$testvalue += 5
+$print($testvalue)
+$testvalue *= 2
+$print($testvalue)
+$testvalue -= 2
+$print($testvalue)
+$testvalue /= 2
+$print($testvalue)

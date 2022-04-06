@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShaellLang.StdLibrary", "Sh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessLib", "ProcessLib\ProcessLib.csproj", "{9E0513AA-7849-45B1-BB99-D9D1FD10D144}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShaellLang.Test", "ShaellLang.Test\ShaellLang.Test.csproj", "{E0C47E32-27AF-4684-84EA-1A37D99835E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
