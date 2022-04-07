@@ -646,8 +646,14 @@ public class ExecutionVisitor : ShaellBaseVisitor<IValue>
     {
         var lhs = Visit(context.expr(0));
         var rhs = Visit(context.expr(1));
-        
+
         lhs.ToSReadStream().ReadStream.Pipe(rhs.ToSWriteStream().WriteStream);
+        
+        if (lhs is CoProc coProc)
+        {
+            coProc.Run();
+        }
+        
         return null;
     }
 }

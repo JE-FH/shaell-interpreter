@@ -127,3 +127,5 @@ $testvalue -= 2
 $print($testvalue)
 $testvalue /= 2
 $print($testvalue)
+
+$hallo = echo("test")

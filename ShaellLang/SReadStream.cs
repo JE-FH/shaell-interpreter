@@ -20,4 +20,11 @@ public class SReadStream : BaseValue
     public override bool ToBool() => true;
 
     public override SReadStream ToSReadStream() => this;
+    
+    
+    public override SString ToSString()
+    {
+        
+        return new SString()
+    }
 }
