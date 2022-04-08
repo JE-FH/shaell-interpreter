@@ -22,6 +22,7 @@ FUNCTION: 'fn';
 GLOBAL: 'global';
 ASYNC: 'async';
 DEFER: 'defer';
+ARGS: 'args';
 LPAREN: '(';
 RPAREN: ')';
 LCURL: '{';
