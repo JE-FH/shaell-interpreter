@@ -54,6 +54,21 @@ namespace ShaellLang
             return _numberTable;
         }
 
+        public override int GetHashCode()
+        {
+            return ("N" + ToSString().Val).GetHashCode();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is Number number)
+            {
+                return IsEqual(number);
+            }
+
+            return false;
+        }
+
         public static Number operator +(Number a, Number b)
         {
             if (a.IsFloating || b.IsFloating)
@@ -66,7 +81,7 @@ namespace ShaellLang
                 {
                     return new Number(checked(a.ToInteger() + b.ToInteger()));
                 }
-                catch (OverflowException e)
+                catch (OverflowException)
                 {
                     return new Number(a.ToFloating() + b.ToFloating());
                 }
@@ -85,7 +100,7 @@ namespace ShaellLang
                 {
                     return new Number(checked(a.ToInteger() - b.ToInteger()));
                 }
-                catch (OverflowException e)
+                catch (OverflowException)
                 {
                     return new Number(a.ToFloating() - b.ToFloating());
                 }
@@ -104,7 +119,7 @@ namespace ShaellLang
                 {
                     return new Number(checked(a.ToInteger() * b.ToInteger()));
                 }
-                catch (OverflowException e)
+                catch (OverflowException)
                 {
                     return new Number(a.ToFloating() * b.ToFloating());
                 }

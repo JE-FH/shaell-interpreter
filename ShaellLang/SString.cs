@@ -32,7 +32,7 @@ public class SString : BaseValue, ITable
     }
 
     public override bool ToBool() => true;
-    public override Number ToNumber() => new Number(int.Parse(_val));
+    //public override Number ToNumber() => new Number(int.Parse(_val));
     public override SString ToSString() => this;
     public override ITable ToTable() => this;
     public override bool IsEqual(IValue other)
@@ -105,4 +105,20 @@ public class SString : BaseValue, ITable
     public string Val => _val;
     public string KeyValue => _val;
     public string UniquePrefix => "S";
+
+    public override int GetHashCode()
+    {
+        //This might be wrong but i cant be asked
+        return ("S" + Val).GetHashCode();
+    }
+    
+    public override bool Equals(object? obj)
+    {
+        if (obj is SString str)
+        {
+            return IsEqual(str);
+        }
+
+        return false;
+    }
 }
