@@ -271,9 +271,10 @@ _NCrunch*
 
 .idea/
 .vs/
-
+packages/
 
 out/
 .antlr/
 gen/
 testscripts/
+global.json
