@@ -39,10 +39,10 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
 
     private IValue SafeVisit(ParserRuleContext context)
     {
-        /*try
-        {*/
+        try
+        {
             return Visit(context);
-        /*}
+        }
         catch (SemanticError)
         {
             throw;
@@ -50,7 +50,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         catch (Exception ex)
         {
             throw new SemanticError(ex.Message, context.start, context.stop);
-        }*/
+        }
     }
     
     public void SetGlobal(string key, IValue val)
