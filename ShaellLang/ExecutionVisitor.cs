@@ -584,12 +584,9 @@ public class ExecutionVisitor : ShaellBaseVisitor<IValue>
         {
             rhs = refValue.Get();
         }
-
-        if (rhs is IKeyable rhsKeyable)
-        {
-            return lhs.ToTable().GetValue(rhsKeyable);
-        }
         
+        return lhs.ToTable().GetValue(rhs.Unpack());
+
         throw new Exception("Cannot index with a non-keyable value");
     }
     
@@ -601,7 +598,7 @@ public class ExecutionVisitor : ShaellBaseVisitor<IValue>
         for (int i = 0; i < context.expr().Length; i++)
         {
             IValue key = Visit(context.objfields()[i]);
-            RefValue value = @out.GetValue(key as IKeyable);
+            RefValue value = @out.GetValue(key.Unpack());
             value.Set(Visit(context.expr()[i]));
         }
 
