@@ -78,6 +78,7 @@ VARIDENTFIER: DOLLAR [a-zA-Z0-9_.$]+;
 NUMBER: [0-9]+('.'[0-9]+)?;
 SQUOTE: '\'';
 COMMENT : '#' ~('\n')* (('\r'? '\n') | EOF) -> skip;
+MULTILINECOMMENT : '/*'(.)*? (MULTILINECOMMENT | .)*? '*/' -> skip;
 WHITESPACE: (' ' | '\t' | '\r' | '\n')+ -> skip;
 
 mode STRING_MODE;
