@@ -36,6 +36,7 @@ medCallback(callbackfn(5))
 
 print("Hællo from shæll!")
 
+
 let str = "abcdefg"
 
 let i = 0
