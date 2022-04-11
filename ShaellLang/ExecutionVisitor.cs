@@ -105,10 +105,17 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
 
     public override IValue VisitIfStmt(ShaellParser.IfStmtContext context)
     {
-        var stmts = context.stmts();
         
-        if (Visit(context.expr()).ToBool())
+        var stmts = context.stmts();
+
+        _scopeManager.PushScope(new ScopeContext());
+        var val = Visit(context.expr()).ToBool();
+        
+        if (val)
             return SafeVisit(stmts[0]);
+        
+        _scopeManager.PopScope();
+        
         if (stmts.Length > 1)
             return SafeVisit(stmts[1]);
 
@@ -117,6 +124,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
 
     public override IValue VisitForLoop(ShaellParser.ForLoopContext context)
     {
+        _scopeManager.PushScope(new ScopeContext());
         SafeVisit(context.expr()[0]);
         while (SafeVisit(context.expr()[1]).ToBool())
         {
@@ -125,17 +133,20 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
                 return rv;
             SafeVisit(context.expr()[2]);
         }
+        _scopeManager.PopScope();
         return null;
     }
 
     public override IValue VisitWhileLoop(ShaellParser.WhileLoopContext context)
     {
+        _scopeManager.PushScope(new ScopeContext());
         while (SafeVisit(context.expr()).ToBool())
         {
             var rv = SafeVisit(context.stmts());
             if (_shouldReturn)
                 return rv;
         }
+        _scopeManager.PopScope();
         return null;
     }
 

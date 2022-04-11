@@ -21,7 +21,7 @@ fn TestNumberOp()
 end
 
 fn TestCompoundExpr()
-    value = 5
+    let value = 5
     value += 10
     A:assert(value == 15, "Number addition through += operator")
     value -= 10
@@ -34,7 +34,7 @@ fn TestCompoundExpr()
     A:assert(value == 1, "Number modulo through %= operator")
     value **= 2
     A:assert(value == 1, "Number exponentiation through **= operator")
-    string = "a"
+    let string = "a"
     string += "b"
     A:assert(string == "ab", "String concatenation through += operator")
 end    
