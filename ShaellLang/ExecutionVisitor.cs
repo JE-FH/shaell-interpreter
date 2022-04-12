@@ -683,7 +683,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
             table.SetValue(new Number(i), new RefValue(new SString(_args[i])));
 
         }
-        _scopeManager.NewTopLevelValue("processargs", table);
+        _scopeManager.NewTopLevelValue("$argv", table);
 
         return null;
     }
