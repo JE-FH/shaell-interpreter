@@ -1,4 +1,13 @@
-﻿let per = 2 + 1
+﻿args(bob, bob2, bo3, bo4)
+
+print(bob)
+print(bo3, bo4)
+print("all args")
+for let i = 0, i < processargs:length(), i += 1 do
+    print(processargs[i])
+end
+
+let per = 2 + 1
 let benis = "benis }"
 
 
