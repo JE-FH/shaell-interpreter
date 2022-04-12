@@ -49,7 +49,8 @@ namespace ShaellLang
 			catch (SyntaxErrorException e)
 			{
 				Console.WriteLine(e.Message);
-				
+				return TestLib.testFailed;
+
 			}
 			return TestLib.testFailed;
 		}
