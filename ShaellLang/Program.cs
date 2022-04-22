@@ -35,38 +35,18 @@ namespace ShaellLang
             
             ExecutionVisitor executer = interactivemode ? new ExecutionVisitor() : new ExecutionVisitor(args[1..]);
 
-            executer.SetGlobal("print", new NativeFunc(delegate(IEnumerable<IValue> innerArgs)
-            {
-                foreach (var value in innerArgs)
-                    Console.Write(value.ToSString().Val);
-                Console.WriteLine();
-
-                return new SNull();
-            }, 0));
-
+            executer.SetGlobal("print", new NativeFunc(StdLib.PrintFunc, 0));
+            executer.SetGlobal("cd", new NativeFunc(StdLib.CdFunc, 0));
+            executer.SetGlobal("exit", new NativeFunc(StdLib.ExitFunc, 0));
+            executer.SetGlobal("debug_break", new NativeFunc(StdLib.DebugBreakFunc, 0));
             executer.SetGlobal("T", TableLib.CreateLib());
-
             executer.SetGlobal("A", TestLib.CreateLib());
 
-            executer.SetGlobal("debug_break", new NativeFunc(delegate
-            {
-                Console.WriteLine("Debug break");
-                return new SNull();
-            }, 0));
-            
             do
             {
                 try
                 {
-                    AntlrInputStream inputStream = new AntlrInputStream(input());
-                    ShaellLexer shaellLexer = new ShaellLexer(inputStream);
-                    shaellLexer.AddErrorListener(new ShaellLexerErrorListener());
-                    CommonTokenStream commonTokenStream = new CommonTokenStream(shaellLexer);
-                    ShaellParser shaellParser = new ShaellParser(commonTokenStream);
-
-                    ShaellParser.ProgContext progContext = shaellParser.prog();
-
-                    executer.Visit(progContext);
+                    Interpret(input, executer);
                 }
                 catch (SyntaxErrorException e)
                 {
@@ -79,6 +59,25 @@ namespace ShaellLang
                 // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
             } while (interactivemode);
 
+        }
+
+        private static void Interpret(Func<string> input, ExecutionVisitor executer)
+        {
+            var errorListener = new ShaellErrorReporter();
+            AntlrInputStream inputStream = new AntlrInputStream(input());
+            ShaellLexer shaellLexer = new ShaellLexer(inputStream);
+            errorListener.SetErrorListener(shaellLexer);
+            CommonTokenStream commonTokenStream = new CommonTokenStream(shaellLexer);
+            ShaellParser shaellParser = new ShaellParser(commonTokenStream);
+            errorListener.SetErrorListener(shaellParser);
+
+            ShaellParser.ProgContext progContext = shaellParser.prog();
+
+            Console.WriteLine(errorListener);
+            if (errorListener.HasErrors)
+                return;
+            executer.Visit(progContext);
+            
         }
 
         /// <summary>
