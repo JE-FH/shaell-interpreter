@@ -45,5 +45,14 @@ public class UnitTest1
         // Assert
         Assert.False(testFailed);
     }
-    
+
+    [Fact]
+    public void TestForeach()
+    {
+        // Act
+        bool testFailed = shaellLang.Run("../../../ForeachTest.æ", new string[]{"ForeachTest.æ", ""});
+        
+        // Assert
+        Assert.False(testFailed);
+    }
 }

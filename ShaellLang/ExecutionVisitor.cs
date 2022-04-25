@@ -683,8 +683,6 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         }
         
         return lhs.ToTable().GetValue(rhs.Unpack());
-
-        throw new Exception("Cannot index with a non-keyable value");
     }
     
     
@@ -747,8 +745,6 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         return new SBool(lhs && rhs);
 
     }
-    
-    
     
     public override IValue VisitBnotExpr(ShaellParser.BnotExprContext context) => 
         throw new NotImplementedException();
