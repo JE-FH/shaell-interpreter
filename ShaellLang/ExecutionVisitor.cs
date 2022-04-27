@@ -342,7 +342,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
     
         var refLhs = lhs as RefValue;
         
@@ -364,7 +364,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
     
         var refLhs = lhs as RefValue;
         
@@ -385,7 +385,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
+    
     
         var refLhs = lhs as RefValue;
         
@@ -406,7 +407,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
+    
     
         var refLhs = lhs as RefValue;
         
@@ -427,8 +429,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
-    
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
+
         var refLhs = lhs as RefValue;
         
         var rhs = SafeVisit(context.expr(1));
@@ -448,7 +450,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
     
         var refLhs = lhs as RefValue;
         
