@@ -12,7 +12,6 @@ namespace ShaellLang
 		
 		public UserTable() : base("usertable")
 		{
-			BaseTable baseTable = new BaseTable("metatable");
 			SetValue(new NonEnumerableItem(new SString("length")), new NativeFunc(LengthFunc, 0));
 			SetValue(new NonEnumerableItem(new SString("insert")), new NativeFunc(InsertFunc, 1));
 			SetValue(new NonEnumerableItem(new SString("set_meta_table")), new NativeFunc(SetMetaTableFunc, 1));

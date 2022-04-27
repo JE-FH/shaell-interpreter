@@ -50,4 +50,6 @@ public class NonEnumerableItem : IValue
     public SString Serialize() => _realValue.Serialize();
     
     public override int GetHashCode() => _realValue.GetHashCode();
+
+    public override bool Equals(object? obj) => _realValue.Equals(obj);
 }
