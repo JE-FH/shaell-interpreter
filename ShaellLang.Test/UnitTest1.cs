@@ -41,6 +41,16 @@ public class UnitTest1
     }
 
     [Fact]
+    public void TestForeach()
+    {
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadStdLib();
+
+        shaellLang.RunFile("../../../ForeachTest.æ");
+    }
+    
+    
+    [Fact]
     public void TestTryThrow()
     {
         ShaellLang shaellLang = new ShaellLang();
@@ -48,5 +58,4 @@ public class UnitTest1
 
         shaellLang.RunFile("../../../TryThrowTest.æ");
     }
-    
 }
