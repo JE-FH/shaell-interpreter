@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ShaellLang;
 
-public class SString : BaseValue, ITable, IKeyable
+public class SString : BaseValue, ITable, IIterable
 {
     private string _val;
     private NativeTable _nativeTable;
@@ -32,7 +32,6 @@ public class SString : BaseValue, ITable, IKeyable
     }
 
     public override bool ToBool() => true;
-    //public override Number ToNumber() => new Number(int.Parse(_val));
     public override SString ToSString() => this;
     public override ITable ToTable() => this;
     public override bool IsEqual(IValue other)
@@ -45,7 +44,7 @@ public class SString : BaseValue, ITable, IKeyable
         return false;
     }
 
-    public RefValue GetValue(IKeyable key)
+    public RefValue GetValue(IValue key)
     {
         if (key is Number numberKey)
         {
@@ -62,7 +61,7 @@ public class SString : BaseValue, ITable, IKeyable
         return _nativeTable.GetValue(key);
     }
 
-    public void RemoveValue(IKeyable key)
+    public void RemoveValue(IValue key)
     {
         return;
     }
@@ -70,6 +69,18 @@ public class SString : BaseValue, ITable, IKeyable
     public override string ToString()
     {
         return _val;
+    }
+
+    public IEnumerable<IValue> GetKeys()
+    {
+        var rv = new List<Number>();
+        for (int i = 0; i < _val.Length; i++)
+        {
+            var n = new Number(i);
+            rv.Add(n);
+        }
+        
+        return rv;
     }
 
     public static SString operator +(SString left, SString right)
@@ -105,4 +116,20 @@ public class SString : BaseValue, ITable, IKeyable
     public string Val => _val;
     public string KeyValue => _val;
     public string UniquePrefix => "S";
+
+    public override int GetHashCode()
+    {
+        //This might be wrong but i cant be asked
+        return ("S" + Val).GetHashCode();
+    }
+    
+    public override bool Equals(object? obj)
+    {
+        if (obj is SString str)
+        {
+            return IsEqual(str);
+        }
+
+        return false;
+    }
 }
