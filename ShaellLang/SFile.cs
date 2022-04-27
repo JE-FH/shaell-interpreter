@@ -88,7 +88,7 @@ public class SFile : BaseValue
 
     public override IFunction ToFunction() => new SProcess(_path);
 
-    public override SString ToSString() => new (_path);
+    public override SString ToSString() => new SString($"(FilePath \"{_path}\")");
 
     public override ITable ToTable() => _table;
     public override bool IsEqual(IValue other)
