@@ -23,6 +23,7 @@ GLOBAL: 'global';
 ASYNC: 'async';
 DEFER: 'defer';
 ARGS: 'args';
+ARGV: '...'IDENTIFIER;
 LET: 'let';
 LPAREN: '(';
 RPAREN: ')';
@@ -82,6 +83,7 @@ SQUOTE: '\'';
 COMMENT : '#' ~('\n')* (('\r'? '\n') | EOF) -> skip;
 MULTILINECOMMENT : '/*'(.)*? (MULTILINECOMMENT | .)*? '*/' -> skip;
 WHITESPACE: (' ' | '\t' | '\r' | '\n')+ -> skip;
+LAMBDA: '=>';
 
 mode STRING_MODE;
 INTERPOLATION: '${' -> pushMode(DEFAULT_MODE);
