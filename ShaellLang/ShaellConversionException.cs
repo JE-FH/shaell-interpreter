@@ -23,10 +23,10 @@ public class ShaellConversionException : Exception
 
     public override string ToString()
     {
-        string rv = $"Cannot convert from {_from} to {_to}: ";
+        string rv = $"Cannot convert from {_from} to {_to}";
         if (_message != null)
         {
-            rv += $"\n{_message}";
+            rv += $":\n{_message}";
         }
         return rv;
     }

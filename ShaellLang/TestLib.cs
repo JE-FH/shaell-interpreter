@@ -29,12 +29,12 @@ public static class TestLib
         var argArr = args.ToArray();
         if (argArr.Length < 2)
         {
-            throw new ShaellException(new SString("assert: too few arguments"));
+            throw new Exception("assert: too few arguments");
         }
         
         if (argArr[0].ToBool() == false)
         {
-            throw new ShaellException(new SString("assert: " + argArr[1].ToSString().Val));
+            throw new Exception("assert: " + argArr[1].ToSString().Val);
         }
 
         return new SNull();

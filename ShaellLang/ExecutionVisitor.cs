@@ -51,7 +51,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         }
         catch (Exception ex)
         {
-            throw new SemanticError(ex.Message, context.start, context.stop);
+            throw new SemanticError(ex.ToString(), context.start, context.stop);
         }
     }
     
