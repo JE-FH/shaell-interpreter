@@ -39,9 +39,9 @@ namespace ShaellLang
 		{
 			var argsArr = args.ToArray();
 			if (argsArr.Length != 1)
-				throw new ArgumentException("Expected 1 argument");
+				throw new ShaellException(new SString("Expected 1 argument"));
 			if (argsArr[0] is not UserTable)
-				throw new Exception("Expected UserTable");
+				throw new ShaellException(new SString("Expected UserTable"));
 			MetaTable = argsArr[0] as UserTable;
 			return new SNull();
 		}
