@@ -9,7 +9,7 @@ public class SFile : BaseValue
 {
     private string _path;
     private NativeTable _table;
-
+    private 
     public SFile(string path) : base("file")
     {
         _path = path;
@@ -84,7 +84,7 @@ public class SFile : BaseValue
 
     public override bool ToBool() => true;
 
-    public override Number ToNumber() => throw new Exception("Type error, File cannot be convert to number.");
+    public override Number ToNumber() => throw new ("Type error, File cannot be convert to number.");
 
     public override IFunction ToFunction() => new SProcess(_path);
 
