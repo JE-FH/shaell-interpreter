@@ -63,14 +63,16 @@ objfields:
     ;
 innerArgList: (expr (COMMA expr)*)?;
 innerFormalArgList: (IDENTIFIER (COMMA IDENTIFIER)*)?;
-programArgs: ARGS LPAREN innerFormalArgList RPAREN;
+programArgs: ARGS LPAREN innerFormalArgList RPAREN
+    | ARGS LPAREN innerFormalArgList COMMA ARGV RPAREN;
 ifStmt: IF expr THEN stmts (ELSE stmts)? END;
 forLoop: FOR expr COMMA expr COMMA expr DO stmts END;
 foreach: FOREACH IDENTIFIER IN expr DO stmts END;
 foreachKeyValue: FOREACH IDENTIFIER COMMA IDENTIFIER IN expr DO stmts END;
 whileLoop: WHILE expr DO stmts END;
-functionDefinition: FUNCTION IDENTIFIER LPAREN innerFormalArgList RPAREN stmts END;
-anonFunctionDefinition: FUNCTION LPAREN innerFormalArgList RPAREN stmts END;
+functionDefinition: FUNCTION IDENTIFIER LPAREN innerFormalArgList RPAREN functionBody;
+anonFunctionDefinition: FUNCTION LPAREN innerFormalArgList RPAREN functionBody;
+functionBody: stmts END
+    | LAMBDA expr;
 returnStatement: RETURN expr;
-throwStatement: THROW expr;
-
+throwStatement: THROW expr; 
