@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ShaellLang;
 
-public class SString : BaseValue, ITable, IIterable
+public class SString : BaseValue, ITable
 {
     private string _val;
     private NativeTable _nativeTable;
@@ -131,5 +131,10 @@ public class SString : BaseValue, ITable, IIterable
         }
 
         return false;
+    }
+
+    public override SString Serialize()
+    {
+        return new SString($"\"{_val}\"");
     }
 }

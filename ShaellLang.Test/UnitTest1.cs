@@ -4,53 +4,58 @@ namespace ShaellLang.Test;
 
 public class UnitTest1
 {
-    private ShaellLang shaellLang = new ShaellLang();
-    
     [Fact]
     public void TestOperators()
     {
-        // Act  
-        bool testFailed = shaellLang.Run("../../../OperatorTest.æ", new string[]{"OperatorTest.æ", ""});
-
-        // Assert
-        Assert.False(testFailed);
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadStdLib();
+        
+        shaellLang.RunFile("../../../OperatorTest.æ");
     }
     
     [Fact]
     public void TestMetaTables()
     {   
-        // Act  
-        bool testFailed = shaellLang.Run("../../../MetatableTest.æ", new string[]{"MetatableTest.æ", ""});
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadStdLib();
 
-        // Assert
-        Assert.False(testFailed);
+        shaellLang.RunFile("../../../MetatableTest.æ");
     }
 
     [Fact]
     public void TestStringInterpolation()
     {
-        // Act
-        bool testFailed = shaellLang.Run("../../../StringInterpolationTest.æ", new string[]{"StringInterpolationTest.æ", ""});
-        
-        // Assert
-        Assert.False(testFailed);
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadStdLib();
+
+        shaellLang.RunFile("../../../StringInterpolationTest.æ");
     }
     
     [Fact]
     public void TestScope()
     {
-        // Act
-        bool testFailed = shaellLang.Run("../../../ScopeTest.æ", new string[]{"ScopeTest.æ", ""});
-        
-        // Assert
-        Assert.False(testFailed);
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadStdLib();
+
+        shaellLang.RunFile("../../../ScopeTest.æ");
     }
 
     [Fact]
-    public void TestTryThrow()
+    public void TestForeach()
     {
-        bool testFailed = shaellLang.Run("../../../TryThrowTest.æ", new string[]{"TryThrowTest.æ", ""});
-        Assert.False(testFailed);
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadStdLib();
+
+        shaellLang.RunFile("../../../ForeachTest.æ");
     }
     
+    
+    [Fact]
+    public void TestTryThrow()
+    {
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadStdLib();
+
+        shaellLang.RunFile("../../../TryThrowTest.æ");
+    }
 }

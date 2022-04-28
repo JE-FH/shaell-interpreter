@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ShaellLang;
@@ -29,5 +30,16 @@ public class NativeTable : ITable
     public virtual void RemoveValue(IValue key)
     {
         return;
+    }
+
+    public IEnumerable<IValue> GetKeys()
+    {
+        var rv = new List<IValue>();
+        foreach (var key in valueLookup)   
+        {
+            rv.Add(new SString(key.Key));
+        }
+
+        return rv;
     }
 }

@@ -51,7 +51,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         }
         catch (Exception ex)
         {
-            throw new SemanticError(ex.Message, context.start, context.stop);
+            throw new SemanticError(ex.ToString(), context.start, context.stop);
         }
     }
     
@@ -67,7 +67,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         return VisitStmts(context.stmts(), false);
     }
 
-    private IValue VisitStmts(ShaellParser.StmtsContext context, bool scoper, bool implicitReturn = false)
+    public IValue VisitStmts(ShaellParser.StmtsContext context, bool scoper, bool implicitReturn = false)
     {
         if (scoper)
             _scopeManager.PushScope(new ScopeContext());
@@ -129,18 +129,16 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
 
     public override IValue VisitForeach(ShaellParser.ForeachContext context)
     {
-        var v = SafeVisit(context.expr()).Unpack();
-        if(v is IIterable iterable && v is ITable table)
+        var table = SafeVisit(context.expr()).ToTable();
+
+        foreach (var key in table.GetKeys())
         {
-            foreach (var key in iterable.GetKeys())
-            {
-                _scopeManager.PushScope(new ScopeContext());
-                _scopeManager.NewTopLevelValue(context.IDENTIFIER().GetText(), table.GetValue(key));
-                var rv = SafeVisit(context.stmts());
-                _scopeManager.PopScope();
-                if (_shouldReturn)
-                    return rv;
-            }
+            _scopeManager.PushScope(new ScopeContext());
+            _scopeManager.NewTopLevelValue(context.IDENTIFIER().GetText(), table.GetValue(key));
+            var rv = SafeVisit(context.stmts());
+            _scopeManager.PopScope();
+            if (_shouldReturn)
+                return rv;
         }
 
         return null;
@@ -148,22 +146,21 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
 
     public override IValue VisitForeachKeyValue(ShaellParser.ForeachKeyValueContext context)
     {
-        var v = SafeVisit(context.expr()).Unpack();
-        if(v is IIterable iterable && v is ITable table)
+        var table = SafeVisit(context.expr()).ToTable();
+
+        foreach (var key in table.GetKeys())
         {
-            foreach (var key in iterable.GetKeys())
+            _scopeManager.PushScope(new ScopeContext());
+            _scopeManager.NewTopLevelValue(context.IDENTIFIER(0).GetText(), key);
+            _scopeManager.NewTopLevelValue(context.IDENTIFIER(1).GetText(), table.GetValue(key));
+            var rv = SafeVisit(context.stmts());
+            _scopeManager.PopScope();
+            if (_shouldReturn)
             {
-                _scopeManager.PushScope(new ScopeContext());
-                _scopeManager.NewTopLevelValue(context.IDENTIFIER(0).GetText(), key);
-                _scopeManager.NewTopLevelValue(context.IDENTIFIER(1).GetText(), table.GetValue(key));
-                var rv = SafeVisit(context.stmts());
-                _scopeManager.PopScope();
-                if (_shouldReturn)
-                {
-                    return rv;
-                }
+                return rv;
             }
         }
+        
         return null;
     }
 
@@ -240,7 +237,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
 
         var value = lhs as RefValue;
         if (value == null)
-            throw new SyntaxErrorException("Syntax Error: Tried to assign to non ref");
+            throw new SemanticError("Tried to assignt to non ref", context.start, context.stop);
 
         RefValue refLhs = value;
 
@@ -342,7 +339,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
     
         var refLhs = lhs as RefValue;
         
@@ -364,7 +361,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
     
         var refLhs = lhs as RefValue;
         
@@ -385,7 +382,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
+    
     
         var refLhs = lhs as RefValue;
         
@@ -406,7 +404,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
+    
     
         var refLhs = lhs as RefValue;
         
@@ -427,8 +426,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
-    
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
+
         var refLhs = lhs as RefValue;
         
         var rhs = SafeVisit(context.expr(1));
@@ -448,7 +447,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
 
         if (lhs is not RefValue)
-            throw new Exception("Tried to assign to non ref");
+            throw new SemanticError("Tried to assign to non ref", context.start, context.stop);
     
         var refLhs = lhs as RefValue;
         
@@ -504,11 +503,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
     {
         var lhs = SafeVisit(context.expr(0));
         var rhs = SafeVisit(context.expr(1));
-        if (lhs is RefValue lhsRef)
-            lhs = lhsRef.Unpack();
-        if (rhs is RefValue rhsRef)
-            rhs = rhsRef.Unpack();
-        return new SBool(lhs.IsEqual(rhs));
+        
+        return new SBool(lhs.IsEqual(rhs.Unpack()));
     }
 
     public override IValue VisitNEQExpr(ShaellParser.NEQExprContext context)
@@ -516,7 +512,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         var lhs = SafeVisit(context.expr(0));
         var rhs = SafeVisit(context.expr(1));
 
-        return new SBool(!lhs.Equals(rhs.Unpack()));
+        return new SBool(!lhs.IsEqual(rhs.Unpack()));
     }
 
     public override IValue VisitLnotExpr(ShaellParser.LnotExprContext context)
@@ -660,7 +656,9 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
                 _scopeManager.NewTopLevelValue(formalArgs[i].GetText(), new SNull());
         }
 
-        if (context.ARGV() != null)
+        var argv = context.argv().IDENTIFIER().GetText();
+        
+        if (argv != null)
         {
             var table = new UserTable();
             for (int i = 0; i < _args.Length; i++)
@@ -668,7 +666,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
                 table.SetValue(new Number(i), new RefValue(new SString(_args[i])));
             }
 
-            _scopeManager.NewTopLevelValue(context.ARGV().GetText().Substring(3), table);
+            _scopeManager.NewTopLevelValue(argv, table);
         }
 
         return null;
@@ -696,6 +694,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
     public override IValue VisitTryExpr(ShaellParser.TryExprContext context)
     {
         _scopeManager.PushScope(new ScopeContext());
+        var scopeRestorePoint = _scopeManager.CopyScopes();
         var rv = new UserTable();
 
         try
@@ -706,11 +705,13 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         }
         catch (ShaellException e)
         {
+            _scopeManager = scopeRestorePoint;
             rv.SetValue(new SString("error"), e.ExceptionValue);
             rv.SetValue(new SString("status"), new Number(1));
         }
         catch (Exception e)
         {
+            _scopeManager = scopeRestorePoint;
             rv.SetValue(new SString("error"), new SString(e.ToString()));
             rv.SetValue(new SString("status"), new Number(1));
         }
