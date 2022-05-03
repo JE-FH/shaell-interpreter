@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using PipeHelper;
 
 namespace ShaellLang;
 
@@ -91,10 +92,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
     {
         if (context.children.Count == 1)
         {
-            var child = Visit(context.children[0]);
-            if (child is SProcess proc)
-                return proc.Execute().ToJobObject();
-            return child;
+            return Visit(context.children[0]);
         }
         throw new Exception("No no no");
     }
@@ -556,23 +554,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
             args.Add(val);
         }
 
-        if (lhs is SProcess proc)
-        {
-            proc.AddArguments(args);
-            return proc;
-        }
-
         return lhs.Call(args);
-    }
-
-    public override IValue VisitPIPEExpr(ShaellParser.PIPEExprContext context)
-    {
-        var lhs = SafeVisit(context.expr(0)).ToSProcess();
-        var rhs = SafeVisit(context.expr(1)).ToSProcess();
-
-        rhs.LeftProcess = lhs;
-        
-        return rhs;
     }
 
     //Visit PosExpr and return the value with toNumber
@@ -708,7 +690,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         {
             _scopeManager = scopeRestorePoint;
             rv.SetValue(new SString("error"), e.ExceptionValue);
-            rv.SetValue(new SString("status"), new Number(1));
+            rv.SetValue(new SString("status"), new Number(e.ErrorCode));
         }
         catch (Exception e)
         {
@@ -728,4 +710,105 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
     
     public override IValue VisitBnotExpr(ShaellParser.BnotExprContext context) => 
         throw new NotImplementedException();
+
+    public override IValue VisitProgProgramExpression(ShaellParser.ProgProgramExpressionContext context)
+    {
+        RunProgProgram(context.progProgram(), null);
+        
+        return null;
+    }
+
+    public override IValue VisitPipeProgramExpression(ShaellParser.PipeProgramExpressionContext context)
+    {
+        RunPipeProgram(context.pipeProgram(), null);
+        
+        return null;
+    }
+    
+    public void RunProgProgram(ShaellParser.ProgProgramContext context, string? pipedInput)
+    {
+        var targetFile = SafeVisit(context.expr()).ToSFile();
+        var prog = new ProgramPipelineElement(targetFile.GetProgramPath());
+
+        var arguments = new List<string>();
+        foreach (var argument in context.innerArgList().expr())
+        {
+            arguments.Add(SafeVisit(argument).ToSString().Val);
+        }
+        
+        int returnCode = prog.Run(arguments, pipedInput);
+        if (returnCode != 0)
+        {
+            throw new ShaellException(
+                new SString($"Program exited with non zero value {returnCode}"),
+                returnCode
+            );
+        }
+    }
+
+    public void RunPipeProgram(ShaellParser.PipeProgramContext context, string? pipedInput)
+    {
+        var targetFile = SafeVisit(context.expr()).ToSFile();
+        var topPipeElement = new ProgramPipelineElement(targetFile.GetProgramPath());
+        foreach (var pipeTarget in context.pipeDesc())
+        {
+            topPipeElement.CaptureOutput(GetPipeTargetName(pipeTarget));
+        }
+        
+        var arguments = new List<string>();
+        foreach (var argument in context.innerArgList().expr())
+        {
+            arguments.Add(SafeVisit(argument).ToSString().Val);
+        }
+
+        int returnCode = topPipeElement.Run(arguments, pipedInput);
+        if (returnCode != 0)
+        {
+            throw new ShaellException(
+                new SString($"Program exited with non zero value {returnCode}"),
+                returnCode
+            );
+        }
+        
+        foreach (var pipeTarget in context.pipeDesc())
+        {
+            string pipeName = GetPipeTargetName(pipeTarget);
+            PipeIntoPipeTarget(pipeTarget, topPipeElement.GetOutput(pipeName));
+        }
+    }
+
+    
+
+    public string GetPipeTargetName(ShaellParser.PipeDescContext context)
+    {
+        if (context is ShaellParser.OntoDescContext ontoDescContext)
+            return ontoDescContext.IDENTIFIER().GetText();
+        else if (context is ShaellParser.IntoDescContext intoDescContext)
+            return intoDescContext.IDENTIFIER().GetText();
+        throw new Exception("Unsupported type");
+    }
+
+    public void PipeIntoPipeTarget(ShaellParser.PipeDescContext context, string input)
+    {
+        if (context is ShaellParser.OntoDescContext ontoDescContext)
+        {
+            var target = SafeVisit(ontoDescContext.expr());
+            if (target is RefValue refValue)
+                refValue.Set(new SString(input));
+            else
+                throw new ShaellException(new SString("Cannot pipe into rvalue"));
+            return;
+        }
+        else if (context is ShaellParser.IntoDescContext intoDescContext)
+        {
+            var pipeTarget = intoDescContext.pipeTarget();
+            if (pipeTarget.progProgram() != null)
+                RunProgProgram(pipeTarget.progProgram(), input);
+            else
+                RunPipeProgram(pipeTarget.pipeProgram(), input);
+            return;
+        }
+
+        throw new Exception("Unsupported type");
+    }
 }

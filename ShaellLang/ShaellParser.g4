@@ -19,6 +19,8 @@ expr: DQUOTE strcontent* END_STRING # StringLiteralExpr
 	| TRY stmts END #TryExpr
 	| IDENTIFIER # IdentifierExpr
 	| LPAREN expr RPAREN # Parenthesis
+	| progProgram #ProgProgramExpression
+	| pipeProgram #PipeProgramExpression
 	| LCURL (objfields ASSIGN expr (COMMA objfields ASSIGN expr)*)? RCURL #ObjectLiteral
 	|<assoc=right> DEREF expr # DerefExpr
 	|<assoc=right> LNOT expr # LnotExpr
@@ -42,7 +44,6 @@ expr: DQUOTE strcontent* END_STRING # StringLiteralExpr
     | expr NEQ expr # NEQExpr
     | expr LAND expr # LANDExpr
     | expr LOR expr # LORExpr
-    | expr PIPE expr # PIPEExpr
 	|<assoc=right> expr ASSIGN expr # AssignExpr
 	|<assoc=right> expr PLUSEQ expr  # PlusEqExpr
 	|<assoc=right> expr MINUSEQ expr # MinusEqExpr
@@ -52,8 +53,19 @@ expr: DQUOTE strcontent* END_STRING # StringLiteralExpr
     |<assoc=right> expr POWEQ expr # PowEqExpr
     |anonFunctionDefinition # AnonFnDefinition
 	;
+pipeTarget: progProgram | pipeProgram;
+
+progProgram:
+    PROG expr WITH LPAREN innerArgList RPAREN;
+pipeProgram:
+    PIPE expr WITH LPAREN innerArgList RPAREN pipeDesc* END;
+pipeDesc:
+    IDENTIFIER INTO pipeTarget #IntoDesc
+    |IDENTIFIER ONTO expr #OntoDesc;
+    
 strcontent:
     NEWLINE # NewLine
+    | ESCAPEDINTERPOLATION #EscapedInterpolation
     | INTERPOLATION expr STRINGCLOSEBRACE # Interpolation
     | TEXT # StringLiteral
     ;

@@ -56,7 +56,7 @@ BOR: '|';
 LAND: '&&';
 LOR: '||';
 NULLCOAL: '??';
-PIPE: '->';
+
 ASSIGN: '=';
 COMMA: ',';
 PLUSEQ: '+=';
@@ -75,6 +75,11 @@ TRUE: 'true';
 NULL: 'null';
 THROW: 'throw';
 TRY: 'try';
+WITH: 'with';
+PIPE: 'pipe';
+INTO: '->';
+ONTO: '=>';
+PROG: 'prog';
 DQUOTE: '"' {this.IncreaseDepth();} -> pushMode(STRING_MODE);
 IDENTIFIER: [a-zA-Z_.$][a-zA-Z0-9_.$]*;
 NUMBER: [0-9]+('.'[0-9]+)?;
@@ -84,8 +89,11 @@ MULTILINECOMMENT : '/*'(.)*? (MULTILINECOMMENT | .)*? '*/' -> skip;
 WHITESPACE: (' ' | '\t' | '\r' | '\n')+ -> skip;
 LAMBDA: '=>';
 
+
 mode STRING_MODE;
-INTERPOLATION: '${' -> pushMode(DEFAULT_MODE);
+ESCAPEDINTERPOLATION: '\\$';
+ESCAPEDESCAPE: '\\';
 NEWLINE: '\\n';
+INTERPOLATION: '${' -> pushMode(DEFAULT_MODE);
 END_STRING: '"' {this.DecreaseDepth();} -> popMode;
-TEXT: ~('"'|'\n'|'$')+;
+TEXT: ~('"'|'$'|'\\')+;

@@ -5,10 +5,12 @@ namespace ShaellLang;
 public class ShaellException : Exception
 {
     public IValue ExceptionValue { get; }
+    public int ErrorCode { get; }
     
-    public ShaellException(IValue exceptionValue)
+    public ShaellException(IValue exceptionValue, int errorCode = 1)
     {
         ExceptionValue = exceptionValue;
+        ErrorCode = errorCode;
     }
 
     public override string ToString()
