@@ -222,8 +222,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
                 context.functionBody(),
                 _scopeManager.CopyScopes(), 
                 formalArgIdentifiers,
-                    context.IDENTIFIER().GetText()
-                )
+                context.IDENTIFIER().GetText()
+            )
         );
         
         return null;
