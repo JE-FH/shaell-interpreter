@@ -35,7 +35,7 @@ public class ProgramPipelineElement : IPipelineElement
     {
         if (!_capturedInput.TryGetValue(outputName, out string rv))
         {
-            throw new Exception("outputName was captured");
+            throw new Exception($"{outputName} was not captured");
         }
         return rv;
     }

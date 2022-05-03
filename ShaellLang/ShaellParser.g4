@@ -61,11 +61,12 @@ pipeProgram:
     PIPE expr WITH LPAREN innerArgList RPAREN pipeDesc* END;
 pipeDesc:
     IDENTIFIER INTO pipeTarget #IntoDesc
-    |IDENTIFIER ONTO expr #OntoDesc;
+    |IDENTIFIER INTO expr #OntoDesc;
     
 strcontent:
     NEWLINE # NewLine
     | ESCAPEDINTERPOLATION #EscapedInterpolation
+    | ESCAPEDESCAPE #EscapedEscape
     | INTERPOLATION expr STRINGCLOSEBRACE # Interpolation
     | TEXT # StringLiteral
     ;
