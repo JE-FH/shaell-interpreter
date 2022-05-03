@@ -10,18 +10,21 @@ public class UserFunc : BaseValue, IFunction
     private ScopeManager _capturedScope;
     private List<string> _formalArguments;
     private ScopeContext _globalScope;
+    private string _name;
 
     public UserFunc(
         ScopeContext globalScope, 
         ShaellParser.FunctionBodyContext funcBody, 
         ScopeManager capturedScope, 
-        List<string> formalArguments
+        List<string> formalArguments,
+        string name
         ) : base("userfunc")
     {
         _funcBody = funcBody;
         _capturedScope = capturedScope;
         _formalArguments = formalArguments;
         _globalScope = new ScopeContext();
+        _name = name;
     }
 
     public override bool ToBool() => true;
@@ -38,7 +41,7 @@ public class UserFunc : BaseValue, IFunction
 
         var executioner = new ExecutionVisitor(_globalScope, activeScopeManager);
 
-        return executioner.VisitFunctionBody(_funcBody);
+        return executioner.VisitFunctionBody(_funcBody, _name);
         //var jo = new JobObject(executioner.VisitFunctionBody(_funcBody));
         //return jo;
     }
