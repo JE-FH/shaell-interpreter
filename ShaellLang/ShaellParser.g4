@@ -4,9 +4,18 @@ options {
     tokenVocab = 'ShaellLexer';
 }
 
-prog: stmts | programArgs stmts;
+prog: stmts;
 stmts: stmt*;
-stmt: ifStmt | forLoop | whileLoop | returnStatement | functionDefinition | foreach | foreachKeyValue | throwStatement | expr;
+stmt: ifStmt 
+| forLoop 
+| whileLoop 
+| returnStatement 
+| functionDefinition 
+| foreach 
+| foreachKeyValue 
+| throwStatement
+| pipeProgram
+| expr;
 boolean: 
     TRUE # TrueBoolean 
     | FALSE # FalseBoolean
@@ -19,17 +28,16 @@ expr: DQUOTE strcontent* END_STRING # StringLiteralExpr
 	| TRY stmts END #TryExpr
 	| IDENTIFIER # IdentifierExpr
 	| LPAREN expr RPAREN # Parenthesis
-	| progProgram #ProgProgramExpression
-	| pipeProgram #PipeProgramExpression
-	| LCURL (objfields ASSIGN expr (COMMA objfields ASSIGN expr)*)? RCURL #ObjectLiteral
 	|<assoc=right> DEREF expr # DerefExpr
+	| LCURL (objfields ASSIGN expr (COMMA objfields ASSIGN expr)*)? RCURL #ObjectLiteral
+	| expr COLON IDENTIFIER # IdentifierIndexExpr
+	| expr LSQUACKET expr RSQUACKET # SubScriptExpr
+	| expr LPAREN innerArgList RPAREN # FunctionCallExpr
+	| progProgram #ProgProgramExpr
 	|<assoc=right> LNOT expr # LnotExpr
 	|<assoc=right> BNOT expr # BnotExpr
 	|<assoc=right> MINUS expr # NegExpr
 	|<assoc=right> PLUS expr # PosExpr
-	| expr COLON IDENTIFIER # IdentifierIndexExpr
-	| expr LSQUACKET expr RSQUACKET # SubScriptExpr
-	| expr LPAREN innerArgList RPAREN # FunctionCallExpr
 	| expr POW expr # PowExpr
 	| expr MOD expr # ModExpr
 	| expr DIV expr # DivExpr
@@ -56,9 +64,9 @@ expr: DQUOTE strcontent* END_STRING # StringLiteralExpr
 pipeTarget: progProgram | pipeProgram;
 
 progProgram:
-    PROG expr WITH LPAREN innerArgList RPAREN;
+    PROG expr (WITH LPAREN innerArgList RPAREN)? (INTO (pipeTarget | expr))?;
 pipeProgram:
-    PIPE expr WITH LPAREN innerArgList RPAREN pipeDesc* END;
+    PIPE expr (WITH LPAREN innerArgList RPAREN)? pipeDesc* END;
 pipeDesc:
     IDENTIFIER INTO pipeTarget #IntoDesc
     |IDENTIFIER INTO expr #OntoDesc;
@@ -77,8 +85,6 @@ objfields:
 innerArgList: (expr (COMMA expr)*)?;
 innerFormalArgList: (IDENTIFIER (COMMA IDENTIFIER)*)?;
 argv: BOR IDENTIFIER;
-programArgs: ARGS LPAREN innerFormalArgList RPAREN
-    | ARGS LPAREN innerFormalArgList argv RPAREN;
 ifStmt: IF expr THEN stmts (ELSE stmts)? END;
 forLoop: FOR expr COMMA expr COMMA expr DO stmts END;
 foreach: FOREACH IDENTIFIER IN expr DO stmts END;

@@ -1,13 +1,9 @@
 #!/usr/bin/env shæll
-define_args(|args)
+
 
 fn strip_whitespace(str)
-    pipe echo with (str)
-        out -> pipe xargs with ()
-            out -> let rv
-        end 
-    end
-	  return rv
+    exec echo~(str) -> exec xargs -> let rv
+    return rv
 end
 
 fn startswith(str, startstr)
@@ -15,40 +11,35 @@ fn startswith(str, startstr)
 end
 
 if args:length() == 0 then
-	prog echo with ("expected username as argument")
+	exec echo~("expected username as argument")
 	exit(1)
 end
 
 let color_fix = "<span> </span>"
 
-pipe sts with ("-u", args[0], "-b", "--strandvejen")
-    out -> let sts_out
-    status -> let status
-end
+let status = exec sts~("-u", args[0], "-b", "--strandvejen") -> let sts_out
 
 if status != 0 then
-	prog echo with ("${color_fix}<span color='#02bfe7'>~~</span> -\$")
-	prog echo with ("---")
-	prog echo with ("fejl: ${strip_whitespace(sts_out)}")
+	exec echo~("${color_fix}<span color='#02bfe7'>~~</span> -\$")
+	exec echo~("---")
+	exec echo~("fejl: ${strip_whitespace(sts_out)}")
 	exit(0)
 end
 
-let sts_out = res:value
-
 let sportcola_pris = 6
-let balance = +strip_whitespace(output)
+let balance = +strip_whitespace(sts_out)
 let sportcola_koefficient = balance / sportcola_pris
 
 if sportcola_koefficient < 1 then
-	prog echo with ("${color_fix}<span color='#F00'>${balance} -\$!!!!</span>")
+	exec echo~("${color_fix}<span color='#F00'>${balance} -\$!!!!</span>")
 else
   if sportcola_koefficient < 2 then
-	  prog echo with ("${color_fix}<span color='#FA0'>${balance}</span> -\$")
+	  exec echo~("${color_fix}<span color='#FA0'>${balance}</span> -\$")
   else
-	  prog echo with ("${color_fix}<span color='#0F0'>${balance}</span> -\$")
+	  exec echo~("${color_fix}<span color='#0F0'>${balance}</span> -\$")
   end
 end
-prog echo with ("---")
+exec echo~("---")
 
 let korrekt_grammatik
 
@@ -58,5 +49,5 @@ else
 	korrekt_grammatik = "sportcolaer"
 end
 
-prog printf with ("Du kan købe %.2f ${korrekt_grammatik}\n", sportcola_koefficient)
-prog echo with ("Stregsystem hjemmeside | href='https://stregsystem.fklub.dk/10/sale/4063/'")
+exec printf~("Du kan købe %.2f ${korrekt_grammatik}\n", sportcola_koefficient)
+exec echo~("Stregsystem hjemmeside | href='https://stregsystem.fklub.dk/10/sale/4063/'")
