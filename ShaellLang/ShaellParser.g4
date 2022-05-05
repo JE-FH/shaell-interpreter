@@ -7,15 +7,16 @@ options {
 prog: stmts;
 stmts: stmt*;
 stmt: ifStmt 
-| forLoop 
-| whileLoop 
-| returnStatement 
-| functionDefinition 
-| foreach 
-| foreachKeyValue 
-| throwStatement
-| pipeProgram
-| expr;
+    | forLoop 
+    | whileLoop 
+    | returnStatement 
+    | functionDefinition 
+    | foreach 
+    | foreachKeyValue 
+    | throwStatement
+    | pipeProgram
+    | expr
+    ;
 boolean: 
     TRUE # TrueBoolean 
     | FALSE # FalseBoolean
@@ -24,24 +25,24 @@ expr: DQUOTE strcontent* END_STRING # StringLiteralExpr
     | LET IDENTIFIER # LetExpr
     | NUMBER # NumberExpr
     | NULL # NullExpr
-	| boolean # BooleanExpr
-	| TRY stmts END #TryExpr
-	| IDENTIFIER # IdentifierExpr
-	| LPAREN expr RPAREN # Parenthesis
-	|<assoc=right> DEREF expr # DerefExpr
-	| LCURL (objfields ASSIGN expr (COMMA objfields ASSIGN expr)*)? RCURL #ObjectLiteral
-	| expr COLON IDENTIFIER # IdentifierIndexExpr
-	| expr LSQUACKET expr RSQUACKET # SubScriptExpr
-	| expr LPAREN innerArgList RPAREN # FunctionCallExpr
-	| progProgram #ProgProgramExpr
-	|<assoc=right> LNOT expr # LnotExpr
-	|<assoc=right> BNOT expr # BnotExpr
-	|<assoc=right> MINUS expr # NegExpr
-	|<assoc=right> PLUS expr # PosExpr
-	| expr POW expr # PowExpr
-	| expr MOD expr # ModExpr
-	| expr DIV expr # DivExpr
-	| expr MULT expr # MultExpr
+    | boolean # BooleanExpr
+    | TRY stmts END #TryExpr
+    | IDENTIFIER # IdentifierExpr
+    | LPAREN expr RPAREN # Parenthesis
+    |<assoc=right> DEREF expr # DerefExpr
+    | LCURL (objfields ASSIGN expr (COMMA objfields ASSIGN expr)*)? RCURL #ObjectLiteral
+    | expr COLON IDENTIFIER # IdentifierIndexExpr
+    | expr LSQUACKET expr RSQUACKET # SubScriptExpr
+    | expr LPAREN innerArgList RPAREN # FunctionCallExpr
+    | progProgram #ProgProgramExpr
+    |<assoc=right> LNOT expr # LnotExpr
+    |<assoc=right> BNOT expr # BnotExpr
+    |<assoc=right> MINUS expr # NegExpr
+    |<assoc=right> PLUS expr # PosExpr
+    | expr POW expr # PowExpr
+    | expr MOD expr # ModExpr
+    | expr DIV expr # DivExpr
+    | expr MULT expr # MultExpr
     | expr PLUS expr # AddExpr
     | expr MINUS expr # MinusExpr
     | expr LT expr # LTExpr
@@ -52,11 +53,11 @@ expr: DQUOTE strcontent* END_STRING # StringLiteralExpr
     | expr NEQ expr # NEQExpr
     | expr LAND expr # LANDExpr
     | expr LOR expr # LORExpr
-	|<assoc=right> expr ASSIGN expr # AssignExpr
-	|<assoc=right> expr PLUSEQ expr  # PlusEqExpr
-	|<assoc=right> expr MINUSEQ expr # MinusEqExpr
-	|<assoc=right> expr MULTEQ expr # MultEqExpr
-	|<assoc=right> expr DIVEQ expr # DivEqExpr
+    |<assoc=right> expr ASSIGN expr # AssignExpr
+    |<assoc=right> expr PLUSEQ expr  # PlusEqExpr
+    |<assoc=right> expr MINUSEQ expr # MinusEqExpr
+    |<assoc=right> expr MULTEQ expr # MultEqExpr
+    |<assoc=right> expr DIVEQ expr # DivEqExpr
     |<assoc=right> expr MODEQ expr # ModEqExpr
     |<assoc=right> expr POWEQ expr # PowEqExpr
     |anonFunctionDefinition # AnonFnDefinition
@@ -69,7 +70,8 @@ pipeProgram:
     PIPE expr (WITH LPAREN innerArgList RPAREN)? pipeDesc* END;
 pipeDesc:
     IDENTIFIER INTO pipeTarget #IntoDesc
-    |IDENTIFIER INTO expr #OntoDesc;
+    |IDENTIFIER INTO expr #OntoDesc
+    ;
     
 strcontent:
     NEWLINE # NewLine
@@ -84,7 +86,6 @@ objfields:
     ;
 innerArgList: (expr (COMMA expr)*)?;
 innerFormalArgList: (IDENTIFIER (COMMA IDENTIFIER)*)?;
-argv: BOR IDENTIFIER;
 ifStmt: IF expr THEN stmts (ELSE stmts)? END;
 forLoop: FOR expr COMMA expr COMMA expr DO stmts END;
 foreach: FOREACH IDENTIFIER IN expr DO stmts END;
@@ -93,6 +94,7 @@ whileLoop: WHILE expr DO stmts END;
 functionDefinition: FUNCTION IDENTIFIER LPAREN innerFormalArgList RPAREN functionBody;
 anonFunctionDefinition: FUNCTION LPAREN innerFormalArgList RPAREN functionBody;
 functionBody: stmts END
-    | LAMBDA expr;
+    | LAMBDA expr
+    ;
 returnStatement: RETURN expr;
 throwStatement: THROW expr; 

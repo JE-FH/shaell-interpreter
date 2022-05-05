@@ -2,7 +2,7 @@
 
 
 fn strip_whitespace(str)
-    exec echo~(str) -> exec xargs -> let rv
+    exec echo with (str) -> exec xargs -> let rv
     return rv
 end
 
@@ -11,18 +11,18 @@ fn startswith(str, startstr)
 end
 
 if args:length() == 0 then
-	exec echo~("expected username as argument")
+	exec echo with ("expected username as argument")
 	exit(1)
 end
 
 let color_fix = "<span> </span>"
 
-let status = exec sts~("-u", args[0], "-b", "--strandvejen") -> let sts_out
+let status = exec sts with ("-u", args[0], "-b", "--strandvejen") -> let sts_out
 
 if status != 0 then
-	exec echo~("${color_fix}<span color='#02bfe7'>~~</span> -\$")
-	exec echo~("---")
-	exec echo~("fejl: ${strip_whitespace(sts_out)}")
+	exec echo with ("${color_fix}<span color='#02bfe7'> with  with </span> -\$")
+	exec echo with ("---")
+	exec echo with ("fejl: ${strip_whitespace(sts_out)}")
 	exit(0)
 end
 
@@ -31,15 +31,15 @@ let balance = +strip_whitespace(sts_out)
 let sportcola_koefficient = balance / sportcola_pris
 
 if sportcola_koefficient < 1 then
-	exec echo~("${color_fix}<span color='#F00'>${balance} -\$!!!!</span>")
+	exec echo with ("${color_fix}<span color='#F00'>${balance} -\$!!!!</span>")
 else
   if sportcola_koefficient < 2 then
-	  exec echo~("${color_fix}<span color='#FA0'>${balance}</span> -\$")
+	  exec echo with ("${color_fix}<span color='#FA0'>${balance}</span> -\$")
   else
-	  exec echo~("${color_fix}<span color='#0F0'>${balance}</span> -\$")
+	  exec echo with ("${color_fix}<span color='#0F0'>${balance}</span> -\$")
   end
 end
-exec echo~("---")
+exec echo with ("---")
 
 let korrekt_grammatik
 
@@ -49,5 +49,5 @@ else
 	korrekt_grammatik = "sportcolaer"
 end
 
-exec printf~("Du kan købe %.2f ${korrekt_grammatik}\n", sportcola_koefficient)
-exec echo~("Stregsystem hjemmeside | href='https://stregsystem.fklub.dk/10/sale/4063/'")
+exec printf with ("Du kan købe %.2f ${korrekt_grammatik}\n", sportcola_koefficient)
+exec echo with ("Stregsystem hjemmeside | href='https://stregsystem.fklub.dk/10/sale/4063/'")
