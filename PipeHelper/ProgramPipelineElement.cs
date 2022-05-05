@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace PipeHelper;
 
-public class ProgramPipelineElement : IPipelineElement
+public class ProgramPipelineElement
 {
     private string _executablePath;
     private Process _process;
