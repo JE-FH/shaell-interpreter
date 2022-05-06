@@ -8,7 +8,7 @@ public class UnitTest
     public void TestOperators()
     {
         ShaellLang shaellLang = new ShaellLang();
-        shaellLang.LoadStdLib();
+        shaellLang.LoadTestLib();
         
         shaellLang.RunFile("../../../OperatorTest.æ");
     }
@@ -17,7 +17,7 @@ public class UnitTest
     public void TestMetaTables()
     {   
         ShaellLang shaellLang = new ShaellLang();
-        shaellLang.LoadStdLib();
+        shaellLang.LoadTestLib();
 
         shaellLang.RunFile("../../../MetatableTest.æ");
     }
@@ -26,7 +26,7 @@ public class UnitTest
     public void TestStringInterpolation()
     {
         ShaellLang shaellLang = new ShaellLang();
-        shaellLang.LoadStdLib();
+        shaellLang.LoadTestLib();
 
         shaellLang.RunFile("../../../StringInterpolationTest.æ");
     }
@@ -35,7 +35,7 @@ public class UnitTest
     public void TestScope()
     {
         ShaellLang shaellLang = new ShaellLang();
-        shaellLang.LoadStdLib();
+        shaellLang.LoadTestLib();
 
         shaellLang.RunFile("../../../ScopeTest.æ");
     }
@@ -44,7 +44,7 @@ public class UnitTest
     public void TestForeach()
     {
         ShaellLang shaellLang = new ShaellLang();
-        shaellLang.LoadStdLib();
+        shaellLang.LoadTestLib();
         
         shaellLang.RunFile("../../../ForeachTest.æ");
     }
@@ -53,8 +53,44 @@ public class UnitTest
     public void TestTryThrow()
     {
         ShaellLang shaellLang = new ShaellLang();
-        shaellLang.LoadStdLib();
+        shaellLang.LoadTestLib();
 
         shaellLang.RunFile("../../../TryThrowTest.æ");
+    }
+
+    [Fact]
+    public void TestTypeSystem()
+    {
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadTestLib();
+        
+        shaellLang.RunFile("../../../TypeSystemTest.æ");
+    }
+    
+    [Fact]
+    public void TestDeref()
+    {
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadTestLib();
+        
+        shaellLang.RunFile("../../../DerefTest.æ");
+    } 
+
+    [Fact]
+    public void TestFileOperations()
+    {
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadTestLib();
+        
+        shaellLang.RunFile("../../../FileOperationsTest.æ");
+    }
+
+    [Fact]
+    public void TestWhitespace()
+    {
+        ShaellLang shaellLang = new ShaellLang();
+        shaellLang.LoadTestLib();
+
+        shaellLang.RunFile("../../../WhitespaceTest.æ");
     }
 }
