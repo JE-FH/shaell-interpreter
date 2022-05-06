@@ -4,7 +4,7 @@ options {
     tokenVocab = 'ShaellLexer';
 }
 
-prog: stmts;
+prog: programArgs stmts | stmts;
 stmts: stmt*;
 stmt: ifStmt 
     | forLoop 
@@ -21,7 +21,9 @@ boolean:
     TRUE # TrueBoolean 
     | FALSE # FalseBoolean
     ;
-expr: DQUOTE strcontent* END_STRING # StringLiteralExpr
+expr: 
+    //unsorted
+    DQUOTE strcontent* END_STRING # StringLiteralExpr
     | LET IDENTIFIER # LetExpr
     | NUMBER # NumberExpr
     | NULL # NullExpr
@@ -29,20 +31,20 @@ expr: DQUOTE strcontent* END_STRING # StringLiteralExpr
     | TRY stmts END #TryExpr
     | IDENTIFIER # IdentifierExpr
     | LPAREN expr RPAREN # Parenthesis
-    |<assoc=right> DEREF expr # DerefExpr
     | LCURL (objfields ASSIGN expr (COMMA objfields ASSIGN expr)*)? RCURL #ObjectLiteral
+    | progProgram #ProgProgramExpr
+    //sorted
+    |<assoc=right> DEREF expr # DerefExpr
     | expr COLON IDENTIFIER # IdentifierIndexExpr
     | expr LSQUACKET expr RSQUACKET # SubScriptExpr
     | expr LPAREN innerArgList RPAREN # FunctionCallExpr
-    | progProgram #ProgProgramExpr
     |<assoc=right> LNOT expr # LnotExpr
-    |<assoc=right> BNOT expr # BnotExpr
     |<assoc=right> MINUS expr # NegExpr
     |<assoc=right> PLUS expr # PosExpr
     | expr POW expr # PowExpr
-    | expr MOD expr # ModExpr
-    | expr DIV expr # DivExpr
     | expr MULT expr # MultExpr
+    | expr DIV expr # DivExpr
+    | expr MOD expr # ModExpr
     | expr PLUS expr # AddExpr
     | expr MINUS expr # MinusExpr
     | expr LT expr # LTExpr
@@ -86,6 +88,9 @@ objfields:
     ;
 innerArgList: (expr (COMMA expr)*)?;
 innerFormalArgList: (IDENTIFIER (COMMA IDENTIFIER)*)?;
+
+programArgs: ARGS IDENTIFIER innerFormalArgList END;
+
 ifStmt: IF expr THEN stmts (ELSE stmts)? END;
 forLoop: FOR expr COMMA expr COMMA expr DO stmts END;
 foreach: FOREACH IDENTIFIER IN expr DO stmts END;

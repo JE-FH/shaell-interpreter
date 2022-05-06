@@ -1,5 +1,8 @@
 #!/usr/bin/env shæll
 
+define_args args
+    username
+end
 
 fn strip_whitespace(str)
     exec echo with (str) -> exec xargs -> let rv
@@ -17,7 +20,7 @@ end
 
 let color_fix = "<span> </span>"
 
-let status = exec sts with ("-u", args[0], "-b", "--strandvejen") -> let sts_out
+let status = exec sts with ("-u", args:username, "-b", "--strandvejen") -> let sts_out
 
 if status != 0 then
 	exec echo with ("${color_fix}<span color='#02bfe7'> with  with </span> -\$")

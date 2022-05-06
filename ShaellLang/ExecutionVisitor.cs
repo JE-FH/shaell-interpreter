@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using PipeHelper;
@@ -15,15 +16,6 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
     private ScopeManager _scopeManager;
     private ScopeContext _globalScope;
     private bool _shouldReturn = false;
-    public ExecutionVisitor(string[] args)
-    {
-        _globalScope = new ScopeContext();
-        _scopeManager = new ScopeManager();
-        _scopeManager.PushScope(_globalScope);
-        UserTable argsTable = new UserTable();
-        argsTable.InsertFunc(args.Select(x => new SString(x)));
-        _globalScope.NewValue("args", argsTable);
-    }
     public ExecutionVisitor()
     {
         _globalScope = new ScopeContext();
@@ -68,6 +60,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
     
     public override IValue VisitProg(ShaellParser.ProgContext context)
     {
+        if (context.children.Count == 2)
+            VisitProgramArgs(context.programArgs());
         return VisitStmts(context.stmts(), false, "Top level");
     }
 
@@ -218,8 +212,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
                 context.functionBody(),
                 _scopeManager.CopyScopes(), 
                 formalArgIdentifiers,
-                    context.IDENTIFIER().GetText()
-                )
+                context.IDENTIFIER().GetText()
+            )
         );
         
         return null;
@@ -617,8 +611,8 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
     {
         var lhs = SafeVisit(context.expr());
         if (lhs is Number)
-            return lhs;
-        return -(lhs.ToTable().GetValue(new SString("toNumber")).ToFunction().Call(new IValue[]{}) as Number);
+            return -lhs.ToNumber();
+        return -(lhs.ToSString().ToNumberFunc(Enumerable.Empty<IValue>()) as Number);
     }
     
     //Visit the LORExpr and return the value of the left or right side with short circuiting
@@ -673,6 +667,26 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
         return @out;
     }
 
+    public override IValue VisitProgramArgs(ShaellParser.ProgramArgsContext context)
+    {
+        var formalArgs = context.innerFormalArgList().IDENTIFIER();
+        
+        var args = ArgumentsParser.Arguments;
+        var table = new UserTable();
+        for (var i = 0; i < args.Length; i++)
+        {
+            if (i < formalArgs.Length)
+                table.SetValue(new SString(formalArgs[i].GetText()), new SString(args[i]));
+
+            table.InsertFunc(new SString[] {new SString(args[i])});
+        }
+
+        var argsName = context.IDENTIFIER().GetText();
+        _scopeManager.NewTopLevelValue(argsName, table);
+        
+        return null;
+    }
+
     public override IValue VisitFieldExpr(ShaellParser.FieldExprContext context) => SafeVisit(context.expr());
 
     public override IValue VisitFieldIdentifier(ShaellParser.FieldIdentifierContext context) => new SString(context.GetText());
@@ -725,10 +739,7 @@ public class ExecutionVisitor : ShaellParserBaseVisitor<IValue>
     {
         throw new ShaellException(SafeVisit(context.expr()));
     }
-    
-    public override IValue VisitBnotExpr(ShaellParser.BnotExprContext context) => 
-        throw new NotImplementedException();
-    
+
     #region piping
     public override IValue VisitProgProgramExpr(ShaellParser.ProgProgramExprContext context)
     {
