@@ -6,7 +6,6 @@ let         a
 **  2):
 floor(  )
 
-print(a)
 
 A:assert    (a == 365, 
 "a is different from 365.47"    )   
@@ -23,7 +22,6 @@ let a = 2
             
             let c = a+ 
             b
-            print(c)
             end
 whitespace()
          end
