@@ -52,6 +52,7 @@ public class SFile : BaseValue
         StreamWriter f = new FileInfo(RealPath).AppendText();
         f.Write(argCollection.ToArray()[0].ToSString().Val);
         f.Flush();
+        f.Close();
         return new SNull();
     }
 
@@ -75,6 +76,8 @@ public class SFile : BaseValue
 
         byte[] buffer = new byte[args[0]];
         fs.Read(buffer, 0, (int) args[0]);
+        
+        fs.Close();
 
         return new BString(buffer);
     }
