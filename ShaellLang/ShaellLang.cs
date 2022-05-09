@@ -53,7 +53,7 @@ namespace ShaellLang
             _executioner.SetGlobal("exit", new NativeFunc(StdLib.ExitFunc, 0));
             _executioner.SetGlobal("T", TableLib.CreateLib());
             _executioner.SetGlobal("ENV", new EnvironmentAdapter());
-            
+
         }
 
         public void LoadTestLib()
